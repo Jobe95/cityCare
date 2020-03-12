@@ -1,15 +1,25 @@
-import 'dart:convert';
-
+import 'dart:io';
+import 'package:path/path.dart';
 import 'package:city_care/models/incidents.dart';
 import 'package:dio/dio.dart';
 
 class WebService {
   Future<void> saveIncident(Incident incident) async {
-    final url = 'https://vast-savannah-75068.herokuapp.com/incidentsNoImage';
+    File file = File(incident.imageURL);
+    final filename = basename(file.path.replaceAll(" ", ""));
+
+    final url = 'https://vast-savannah-75068.herokuapp.com/incidents';
+
+    FormData formData = FormData.fromMap({
+      'title': incident.title,
+      'description': incident.description,
+      'image':
+          await MultipartFile.fromFile(incident.imageURL, filename: filename)
+    });
 
     await Dio().post(
       url,
-      data: {'title': incident.title, 'description': incident.description},
+      data: formData,
       options: Options(contentType: 'application/x-www-form-urlencoded'),
     );
   }

@@ -12,4 +12,8 @@ class IncidentViewModel {
   String get description {
     return incident.description;
   }
+
+  String get imageURL {
+    return incident.imageURL;
+  }
 }
